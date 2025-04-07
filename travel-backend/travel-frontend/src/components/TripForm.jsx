@@ -1,61 +1,52 @@
-// src/components/TripForm.jsx
-import React, { useState } from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const TripForm = ({ onAdd }) => {
-  const [formData, setFormData] = useState({
-    location: "",
-    departure: "",
-    return: ""
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await onAdd(formData);
-    setFormData({ location: "", departure: "", return: "" });
-  };
+export default function TripForm() {
+  const [destination, setDestination] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return (
-    <form
-      className="bg-white p-6 rounded-xl shadow-md space-y-4 w-full max-w-md mx-auto"
-      onSubmit={handleSubmit}
-    >
-      <input
-        type="text"
-        name="location"
-        placeholder="Location"
-        value={formData.location}
-        onChange={handleChange}
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded-2xl shadow-md">
+      <Input
+        placeholder="Destination"
+        value={destination}
+        onChange={(e) => setDestination(e.target.value)}
         required
-        className="w-full p-2 border rounded"
       />
-      <input
+      <Input
         type="date"
-        name="departure"
-        value={formData.departure}
-        onChange={handleChange}
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
         required
-        className="w-full p-2 border rounded"
       />
-      <input
+      <Input
         type="date"
-        name="return"
-        value={formData.return}
-        onChange={handleChange}
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
         required
-        className="w-full p-2 border rounded"
       />
-      <button
-        type="submit"
-        className="w-full bg-sky-500 text-white py-2 rounded hover:bg-sky-600 transition"
-      >
-        Add Trip
-      </button>
+      <Input
+        type="number"
+        step="0.01"
+        placeholder="Price"
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+        required
+      />
+      <Textarea
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <Button type="submit" disabled={loading}>
+        {loading ? "Adding..." : "Add Trip"}
+      </Button>
     </form>
   );
-};
-
-export default TripForm;
+}

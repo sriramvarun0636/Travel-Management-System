@@ -1,9 +1,9 @@
 import React from "react";
 
-export const Footer = () => {
-  return (
-    <footer className="text-center text-gray-500 text-sm mt-12 py-4">
-      © 2025 Travel Tracker — Built with ✨ + Tailwind
-    </footer>
-  );
-};
+const Footer = () => (
+  <footer className="bg-white text-sky-600 py-4 text-center mt-10 border-t border-sky-200">
+    <p className="text-sm">Made with 💙 by Your Name</p>
+  </footer>
+);
+
+export default Footer;

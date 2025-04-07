@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, DECIMAL, Text, TIMESTAMP
-from db import Base
+from sqlalchemy import Column, Integer, String, Date, Text, DECIMAL, TIMESTAMP
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 class Trip(Base):
     __tablename__ = "trips"
@@ -9,5 +11,5 @@ class Trip(Base):
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
     price = Column(DECIMAL(10, 2), nullable=False)
-    description = Column(Text)
-    created_at = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
+    description = Column(Text, nullable=True)
+    created_at = Column(TIMESTAMP, nullable=True)

@@ -1,7 +1,14 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:8000", // or wherever your FastAPI is running
-});
-
-export default api;
+await fetch("http://localhost:8000/trips", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      destination,
+      start_date,
+      end_date,
+      price,
+      description,
+    }),
+  });
+  
