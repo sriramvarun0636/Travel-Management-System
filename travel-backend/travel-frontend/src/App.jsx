@@ -1,110 +1,75 @@
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import TripForm from "./components/TripForm";
+import TripList from "./components/TripList";
+import {
+  fetchTrips,
+  addTrip,
+  deleteTrip,
+  updateTrip,
+} from "./api";
 
-function App() {
+export default function App() {
   const [trips, setTrips] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    location: "",
-    start_date: "",
-    end_date: "",
-  });
+  const [editingTrip, setEditingTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchTrips = async () => {
-    try {
-      const res = await fetch("http://localhost:8000/trips");
-      const data = await res.json();
-      setTrips(data);
-    } catch (err) {
-      toast.error("Failed to fetch trips");
-    }
-  };
-
-  useEffect(() => {
-    fetchTrips();
-  }, []);
-
-  const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async () => {
+  const loadTrips = async () => {
     setLoading(true);
-    try {
-      const res = await fetch("http://localhost:8000/trips", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) throw new Error("Failed to add trip");
-      toast.success("Trip added!");
-      setForm({
-        title: "",
-        description: "",
-        location: "",
-        start_date: "",
-        end_date: "",
-      });
-      fetchTrips();
-    } catch (err) {
-      toast.error(err.message);
-    }
+    const data = await fetchTrips();
+    setTrips(data);
     setLoading(false);
   };
 
+  useEffect(() => {
+    loadTrips();
+  }, []);
+
+  const handleAddTrip = async (trip) => {
+    await addTrip(trip);
+    loadTrips();
+  };
+
+  const handleDeleteTrip = async (id) => {
+    await deleteTrip(id);
+    loadTrips();
+  };
+
+  const handleEditTrip = (trip) => {
+    setEditingTrip(trip);
+  };
+
+  const handleUpdateTrip = async (updatedTrip) => {
+    await updateTrip(updatedTrip);
+    setEditingTrip(null);
+    loadTrips();
+  };
+
+  const filteredTrips = trips.filter((trip) =>
+    trip.destination.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <header className="text-3xl font-bold mb-6 text-center">🌍 Travel Management</header>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Add Trip</h2>
-          <div className="space-y-3">
-            {["title", "description", "location", "start_date", "end_date"].map((field) => (
-              <input
-                key={field}
-                type={field.includes("date") ? "date" : "text"}
-                name={field}
-                value={form[field]}
-                onChange={handleChange}
-                placeholder={field.replace("_", " ")}
-                className="w-full p-2 border rounded"
-              />
-            ))}
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-            >
-              {loading ? "Adding..." : "Add Trip"}
-            </button>
-          </div>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#edf4ff] to-white text-gray-800">
+      <Header searchTerm={searchTerm} onSearch={setSearchTerm} />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-2 gap-10">
+          <TripForm
+            onAddTrip={handleAddTrip}
+            onUpdateTrip={handleUpdateTrip}
+            editingTrip={editingTrip}
+          />
+          <TripList
+            trips={filteredTrips}
+            onDelete={handleDeleteTrip}
+            onEdit={handleEditTrip}
+            loading={loading}
+          />
         </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">All Trips</h2>
-          <div className="space-y-4">
-            {trips.map((trip) => (
-              <div key={trip.id} className="bg-white p-4 rounded-xl shadow">
-                <h3 className="text-lg font-bold">{trip.title}</h3>
-                <p>{trip.description}</p>
-                <p className="text-sm text-gray-600">{trip.location}</p>
-                <p className="text-sm text-gray-500">
-                  {trip.start_date} → {trip.end_date}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }
-
-export default App;
