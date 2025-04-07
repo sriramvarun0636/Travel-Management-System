@@ -1,22 +1,23 @@
 import React from "react";
-import { FaMapMarkerAlt, FaPlaneDeparture, FaPlaneArrival } from "react-icons/fa";
+import { MapPin, PlaneTakeoff, PlaneLanding } from "lucide-react";
 
-const TripCard = ({ trip }) => {
+const TripCard = ({ location, departure, return: returnDate }) => {
   return (
-    <div className="bg-white shadow-md rounded-2xl p-6 w-80">
-      <h2 className="text-xl font-semibold mb-4">{trip.name}</h2>
-      <p className="flex items-center mb-2 text-gray-700">
-        <FaMapMarkerAlt className="mr-2 text-blue-600" />
-        Destination: {trip.destination}
-      </p>
-      <p className="flex items-center mb-2 text-gray-700">
-        <FaPlaneDeparture className="mr-2 text-green-600" />
-        Start Date: {trip.startDate}
-      </p>
-      <p className="flex items-center text-gray-700">
-        <FaPlaneArrival className="mr-2 text-red-600" />
-        End Date: {trip.endDate}
-      </p>
+    <div className="bg-white shadow-xl rounded-2xl p-6 w-72 hover:scale-105 hover:shadow-2xl hover:shadow-sky-200 transition-all duration-300 border border-sky-100">
+      <div className="flex items-center gap-2 text-sky-600 mb-3">
+        <MapPin className="w-5 h-5" />
+        <h2 className="text-lg font-semibold">{location}</h2>
+      </div>
+      <div className="flex items-center gap-2 text-gray-700 mb-1">
+        <PlaneTakeoff className="w-4 h-4 text-sky-400" />
+        <span className="font-medium">Departure:</span>
+        <span>{departure}</span>
+      </div>
+      <div className="flex items-center gap-2 text-gray-700">
+        <PlaneLanding className="w-4 h-4 text-sky-400" />
+        <span className="font-medium">Return:</span>
+        <span>{returnDate}</span>
+      </div>
     </div>
   );
 };

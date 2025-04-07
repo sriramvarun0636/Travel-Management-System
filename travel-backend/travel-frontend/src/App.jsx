@@ -1,9 +1,12 @@
 import React from "react";
+import TripList from "./components/TripList";
 
-export default function App() {
+const App = () => {
   return (
-    <div className="min-h-screen bg-purple-700 flex items-center justify-center">
-      <h1 className="text-5xl text-white font-bold">Tailwind is ALIVE 🚀</h1>
-    </div>
+    <main className="font-sans bg-gradient-to-br from-blue-100 to-white min-h-screen">
+      <TripList />
+    </main>
   );
-}
+};
+
+export default App;
